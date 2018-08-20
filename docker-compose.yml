@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  tshark-exporter:
+    build: .
+    ports:
+      - "9431:9431"
+    command:
+      - /usr/bin/tshark-exporter
+      - -i
+      - eth0
