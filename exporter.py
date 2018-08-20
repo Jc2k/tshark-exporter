@@ -56,19 +56,6 @@ async def tshark_watcher(args):
         MATCH_BYTES.labels(*labels).inc(int(event['layers']['tcp']['tcp_tcp_len']))
 
 
-async def tshark_watcher_watcher(args):
-    ''' Restart tshark watcher if it dies '''
-
-    while True:
-        try:
-            await tshark_watcher(args)
-        except KeyboardInterrupt:
-            return
-        except Exception as e:
-            print(e)
-        await asyncio.sleep(1)
-
-
 async def metrics(request):
     data = generate_latest(REGISTRY)
     return web.Response(text=data.decode('utf-8'), content_type='text/plain', charset='utf-8')
@@ -94,9 +81,12 @@ async def main():
     args, unknown = parser.parse_known_args()
 
     metrics = await start_metrics_server(*args.export.split(':'))
-    
-    await tshark_watcher_watcher(unknown)
-    
+
+    try:
+        await tshark_watcher(unknown)
+    except Exception as e:
+        print(e)
+
     metrics.cancel()    
     await metrics.cleanup()
 
