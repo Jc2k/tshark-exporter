@@ -87,8 +87,7 @@ async def main():
     except Exception as e:
         print(e)
 
-    metrics.cancel()    
-    await metrics.cleanup()
+    await metrics.shutdown()
 
 
 if __name__ == '__main__':
