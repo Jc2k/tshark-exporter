@@ -3,14 +3,11 @@
 import argparse
 import asyncio
 import json
-import os
-import sys
 from asyncio.subprocess import PIPE
 
 import aiorun
 from aiohttp import web
 from prometheus_client import REGISTRY, Counter, generate_latest
-
 
 MATCH_COUNT = Counter(
     'tshark_exporter_match_count',
@@ -37,9 +34,9 @@ async def tshark_watcher(args):
         event = json.loads(line)
 
         # We are only interested in valid data
-        if not 'timestamp' in event:
+        if 'timestamp' not in event:
             continue
-            
+
         if 'layers' not in event or 'ip' not in event['layers']:
             continue
 

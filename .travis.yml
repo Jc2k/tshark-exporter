@@ -1,0 +1,17 @@
+language: python
+python:
+  - "3.6"
+
+sudo: required
+
+services:
+  - docker
+
+cache: pip
+
+install:
+  - pip install -r test-requirements.txt -r requirements.txt
+
+script:
+  - py.test tests.py
+  - flake8 exporter.py tests.py
